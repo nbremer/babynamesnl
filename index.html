@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+	<!-- Google fonts -->
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,800,700,300' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+	
+	<!-- D3 -->
+	<script src="js/d3.v3.min.js"></script>
+
+	<!-- jQuery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<!-- Bootstrap 3 -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+	
+	<!-- Combobox script for the search box -->
+	<script src="js/bootstrap-combobox.js"></script>
+	<link href="css/bootstrap-combobox.css" type="text/css" rel="stylesheet">
+	
+	<!-- Data -->
+	<script src="js/boy_names_nl.js"></script>
+	<script src="js/girl_names_nl.js"></script>
+	
+	<link href="css/style.css" type="text/css" rel="stylesheet">
+	
+<body>
+
+	<div class="chartWrapper">
+		<div id="cont" class="container-fluid">
+
+			<!-- Introduction -->
+			<div class="row" style="padding: 5px 0px;">
+				<div class="col-sm-4 column">
+					<div class="row" style="padding: 0px 50px;">
+						<div class="col-md-12 column text-center">
+							<h2 class="titles">The 10 most popular baby names per year since 1880</h2>
+							<span class="subheader">Netherlands</span>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-7 column">
+					<div class="row">
+						<div class="col-md-12 column" style="padding-top: 10px;">
+							<p><span style="font-size: 12px;" class="expl">Each year about 150-200 thousand babies are born in the Netherlands. 
+							Although theoretically you could think of more unique names than there are babies, there are always many babies given the same name. 
+							Of the 89000 boys born in 2014, 81000 did not receive a unique name, which is more than 90%.
+							About 750 baby boys were named Daan, the most popular boy name in 2014.</span></p>
+							<p><span style="font-size: 12px; color: #949494;" class="expl">The chart below shows the top 10 names per year and per gender since 1880. 
+							You can search for any of the about 70 unique boy or girl names that have entered the top 10 in the last 135 years 
+							and see their rise and fall. Or click on a name to see their full reign in the top 10. 
+							Use the smaller overview to change the starting and ending years in the bigger focus chart or switch between genders with the "Boys | Girls" button.
+							You can also start an automatic loop through random names 
+							</span></p>
+						</div>
+					</div>
+					<div class="row" style="margin-top:20px;">
+						<div class="col-md-6 column text-center">
+							<span style="font-size: 11px;">Color gives the approximate starting letter of the name</span>
+							<div class="colorLegend"></div>
+						</div>
+						<div class="col-md-6 column text-center">
+							<span style="font-size: 11px;">Line thickness stands for the highest position ever reached by a name</span>
+							<div class="widthLegend"></div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+			
+			<hr>
+			
+			<!-- Search box and Boy / Girl button -->
+			<div class="row text-center">
+				<div class="col-sm-3 col-sm-offset-1 column text-center">
+					 <div class="form-group">			
+						<select id="searchBox" class="combobox input-large form-control" style="display: none;" onchange="searchEvent(this.value)">
+						  <option value="" selected="selected">Search name...</option>
+						</select>
+					  </div>
+				</div>
+				<div class="col-sm-2 col-sm-push-2 column text-center">
+					<div id="buttonWrapper" class="btn-group" data-toggle="buttons">
+						<label id="boyButton" class="btn btn-default"><input type="radio" class="btn-options"> Boys </label>
+						<label id="girlButton" class="btn btn-default active"><input type="radio" class="btn-options"> Girls </label>
+					</div>
+				</div>
+				<div class="col-sm-3 col-sm-push-2 column text-center">
+					<div class="col-md-offset-1 col-md-5 column text-center">
+						<span class="titles" style="font-size: 13px;">Loop through names</span>
+					</div>
+					<div class="col-md-6 column text-center">
+						<div id="buttonWrapper" class="btn-group" data-toggle="buttons">
+							<label id="loopStartButton" class="btn btn-default"><input type="radio" class="btn-options"> On </label>
+							<label id="loopStopButton" class="btn btn-default active"><input type="radio" class="btn-options"> Off </label>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-2 col-sm-pull-5 column text-center">
+					<span class="genderTitle">Girls</span>
+				</div>
+			</div>
+			
+			<!-- Focus chart -->
+			<div class="row">
+				<div class="col-md-12 column text-center">
+					<div class="chart focus"></div>
+				</div>
+			</div>
+			
+			<!-- Context chart -->
+			<div class="row">
+				<div class="col-md-12 column text-center">
+					<div class="chart context"></div>
+				</div>
+			</div>
+			
+			<hr>
+			
+			<!-- Interesting insights -->
+			<div class="row" style="padding-top: 0px;">
+				<div class="col-sm-11 column col-sm-offset-1">
+					<h3>Some interesting insights</h3>
+				</div>
+				<div class="col-sm-5 column col-sm-offset-1">
+					<p class="insights">
+					Looking at the charts for both girls and boys from the start to the end it becomes clear that for an extremely long time there was not that much of a difference between the top 10 names. 
+					In the first 85 years, between <span id="years_1880_1965_girls" class="clickable">1880 and 1965</span>, only 17 different girl names had entered the top 10. In the <span id="years_49_girls" class="clickable">next 49 years</span> suddenly 50 new names entered and left the top 10.
+					In fact, <span id="Maria" class="clickable">Maria</span> was the most popular girls name from our first known datapoint in 1880 all the way up to 1990 (with one small drop to 2nd place 
+					in 1984 by <span id="Linda" class="clickable">Linda</span>) and then suddenly falling out of the top 10 in only 7 more years.<br>
+					The boys saw almost exactly the same trend that up till 1965 there was little change in the top 10. 
+					Of the 63 names that appeared in the top 10 in these 134 years, only 22% were used in <span id="years_67_boys" class="clickable">the first 67 years</span>
+					</p>
+					<p class="insights">
+					The average name, boy or girl, is present in the top 10 for <span id="Esther" class="clickable">20 years</span>. 
+					Although this number drops to only <span id="Max" class="clickable">8 years</span> when we only look at the time after 1965.
+					Most names that used to be in the top 10 before 1965 have fallen of the chart by 1990, but one name, <span id="Anna" class="clickable">Anna</span>, 
+					falls of for a decade at the start of the 1970's, makes a few short leaps back in the 1980's before being completely back in fashion after 2000
+					</p>
+					<p class="insights">
+					Although <span id="Johannes" class="clickable">Johannes</span> only dropped from the top 10 in 1997 I actually do not know anybody who is called Johannes,
+					most have quite different regular or "calling" names, such as Jan, Johan or Hans. For example, my mother is officially named <span id="Elisabeth" class="clickable">Elisabeth</span>, 
+					quite popular for a long time, but her calling name is Edith. This difference between the "Christian" and calling names makes the top 10 slightly more difficult to 
+					compare to the names that I know from friends. However, for the top 10 names after 1990-2000 (both boys and girls) it seems like the official names have become the same as the regular names					
+					</p>
+				</div>
+				<div class="col-sm-5 column">
+					<p class="insights">
+					When comparing the growth and fall of names of the Netherlands to <a href="http://nbremer.github.io/babynames/" target="_blank" class="clickable">the US version</a>, there are several notable differences and similarities. 
+					Until the 1960's the most popular girl name in the Netherlands was the same
+					as in the US, <span id="Maria2" class="clickable">Maria</span> (which translates to Mary). Mary fell off the chart at the start of the 70's in the US while Maria held out into the 90's.
+					Exactly the same is true for the most popular boy name <span id="Johannes2" class="clickable">Johannes</span> (which translates to John). 
+					Extremely popular in the first half of the 20th century but falling off much faster in the US than the Netherlands. These two are not the only names that appear in both the US and Dutch version. 
+					Even more interesting, both Mary and Maria were temporarily kicked of their 1st place by the same name, <span id="Linda2" class="clickable">Linda</span>. 
+					However, in the US this occurred during the 1940's whereas in the Netherlands it happened much later, in 1984.
+					</p>
+					<p class="insights">
+					One big difference is that in the Netherlands there was hardly any change in the top 10 until about 1965 whereas in the <span id="years_past20_girls" class="clickable">past 20 years</span> 
+					the top 10 has become a hairball of lines with many new names entering and leaving within a few years. 
+					In the US on the other hand there is not really a notable difference in the number of names that rise and fall throughout the entire 135 years 
+					(although in the last 5 years the boy names are beginning to see more changes than before).
+					</p>
+				</div>
+			</div>
+			
+			<!-- Attribution -->
+			<div class="row">
+				<div class="col-md-12 column text-center" style="padding-top: 20px;">
+					<span class="attribution">Created by Nadieh Bremer | <a href="https://www.visualcinnamon.com" target="_blank">VisualCinnamon.com</a> | 
+					<a href="http://nbremer.github.io/babynames/">Check out the American version</a> | 
+					Data: <a href="http://www.naamkunde.net/?page_id=398" target="_blank">Netwerk Naamkunde</a> & <a href="http://www.svb.nl/int/nl/kindernamen/" target="_blank">SVB</a></span>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+	
+	<script src="js/babynames_nl.js"></script>
+	<script src="js/babynames.js"></script>
+</body>
+</html>
